@@ -1,0 +1,105 @@
+{
+  "dashboard": {
+    "title": "VietMart Lakehouse — Streaming & Real-time",
+    "uid": "vietmart-streaming-realtime",
+    "tags": ["vietmart", "lakehouse", "streaming", "kafka", "flink"],
+    "timezone": "Asia/Ho_Chi_Minh",
+    "refresh": "10s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Kafka Consumer Lag",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "sum by (consumergroup, topic) (kafka_consumergroup_lag_sum{consumergroup=~\"flink-.*\"})",
+            "legendFormat": "{{consumergroup}} / {{topic}}"
+          }
+        ],
+        "fieldConfig": {"defaults": {"unit": "short"}},
+        "alert": {"conditions": [{"evaluator": {"type": "gt", "params": [100000]}}]}
+      },
+      {
+        "id": 2,
+        "title": "Kafka Messages In/Sec",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "sum by (topic) (rate(kafka_server_brokertopicmetrics_messagesinpersec_count[1m]))",
+            "legendFormat": "{{topic}}"
+          }
+        ],
+        "fieldConfig": {"defaults": {"unit": "ops"}}
+      },
+      {
+        "id": 3,
+        "title": "Flink Job Status",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 8, "x": 0, "y": 8},
+        "targets": [
+          {"expr": "flink_jobmanager_job_uptime / 1000", "legendFormat": "{{job_name}}"}
+        ],
+        "fieldConfig": {"defaults": {"unit": "s", "mappings": [{"type": "value", "options": {"0": {"text": "DOWN", "color": "red"}}}]}}
+      },
+      {
+        "id": 4,
+        "title": "Flink Records Processed/Sec",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 16, "x": 8, "y": 8},
+        "targets": [
+          {
+            "expr": "sum by (job_name) (rate(flink_taskmanager_job_task_numRecordsInPerSecond[1m]))",
+            "legendFormat": "{{job_name}} in"
+          },
+          {
+            "expr": "sum by (job_name) (rate(flink_taskmanager_job_task_numRecordsOutPerSecond[1m]))",
+            "legendFormat": "{{job_name}} out"
+          }
+        ],
+        "fieldConfig": {"defaults": {"unit": "ops"}}
+      },
+      {
+        "id": 5,
+        "title": "Flink Checkpoint Duration",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+        "targets": [
+          {
+            "expr": "flink_jobmanager_job_lastCheckpointDuration / 1000",
+            "legendFormat": "{{job_name}}"
+          }
+        ],
+        "fieldConfig": {"defaults": {"unit": "s"}}
+      },
+      {
+        "id": 6,
+        "title": "ClickHouse Insert Rate",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+        "targets": [
+          {
+            "expr": "rate(clickhouse_insert_rows_total[1m])",
+            "legendFormat": "rows/sec"
+          }
+        ],
+        "fieldConfig": {"defaults": {"unit": "rowsps"}}
+      },
+      {
+        "id": 7,
+        "title": "Flash Sale Live — Events/Sec",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 24},
+        "description": "Peak target: 600 events/sec during flash sales",
+        "targets": [
+          {
+            "expr": "sum(rate(flink_taskmanager_job_task_numRecordsInPerSecond{job_name=\"vietmart-clickstream-stream\"}[30s]))",
+            "legendFormat": "clickstream events/sec"
+          }
+        ],
+        "fieldConfig": {"defaults": {"unit": "ops", "thresholds": {"steps": [{"color": "green", "value": 0}, {"color": "yellow", "value": 500}, {"color": "red", "value": 800}]}}}
+      }
+    ]
+  }
+}

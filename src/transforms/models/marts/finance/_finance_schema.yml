@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: fct_revenue_daily
+    description: |
+      Daily revenue fact — grain: date × store × channel.
+      CEO morning report. Join with dim_date, dim_stores.
+    columns:
+      - name: date_key
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: total_revenue_vnd
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+
+  - name: fct_revenue_monthly
+    description: Monthly revenue rollup with month-over-month growth rate
+    columns:
+      - name: month_key
+        tests:
+          - not_null
+          - unique
+
+  - name: fct_reconciliation
+    description: |
+      Three-way revenue reconciliation (POS vs E-commerce vs Payments).
+      Alerts when discrepancy > 1%. CFO daily check.
+    columns:
+      - name: date_key
+        tests:
+          - not_null
+          - unique
+      - name: reconciliation_status
+        tests:
+          - accepted_values:
+              values: ["OK", "ALERT"]

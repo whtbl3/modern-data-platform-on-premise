@@ -1,0 +1,37 @@
+name: lakehouse_transforms
+version: "1.0.0"
+
+profile: lakehouse
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  lakehouse_transforms:
+    staging:
+      +schema: staging
+      +materialized: view
+      +tags: ["staging"]
+    intermediate:
+      +schema: curated
+      +materialized: table
+      +tags: ["intermediate"]
+    marts:
+      +schema: analytics
+      +materialized: table
+      +tags: ["marts"]
+      dimensions:
+        +tags: ["dimensions"]
+      finance:
+        +tags: ["finance"]
+      marketing:
+        +tags: ["marketing"]
+      operations:
+        +tags: ["operations"]

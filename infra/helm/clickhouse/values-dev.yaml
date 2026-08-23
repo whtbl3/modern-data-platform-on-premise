@@ -1,0 +1,18 @@
+shards: 1
+replicas: 1
+
+resources:
+  requests:
+    memory: 2Gi
+    cpu: 1000m
+
+storage:
+  size: 50Gi
+
+users:
+  - name: default
+    profile: default
+
+monitoring:
+  enabled: true
+  prometheusEndpoint: true

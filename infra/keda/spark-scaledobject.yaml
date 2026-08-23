@@ -1,0 +1,21 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: spark-batch-scaler
+  namespace: prod
+spec:
+  scaleTargetRef:
+    apiVersion: sparkoperator.k8s.io/v1beta2
+    kind: SparkApplication
+    name: batch-pipeline
+  pollingInterval: 30
+  cooldownPeriod: 300
+  minReplicaCount: 0
+  maxReplicaCount: 10
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus.monitoring:9090
+        metricName: spark_pending_tasks
+        query: sum(spark_app_pending_tasks)
+        threshold: "5"

@@ -1,0 +1,45 @@
+[project]
+name = "lakehouse-onprem"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "dagster>=1.6",
+    "dagster-webserver>=1.6",
+    "pyspark>=3.5",
+    "boto3>=1.34",
+    "trino>=0.328",
+    "dbt-trino>=1.7",
+    "kafka-python>=2.0",
+    "psycopg2-binary>=2.9",
+    "pyarrow>=15.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "chispa>=0.10",
+    "ruff>=0.3",
+    "duckdb>=0.10",
+]
+# apache-flink and soda-core-trino run in isolated containers (see Dockerfiles)
+# They have incompatible transitive deps and cannot coexist in one venv
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "chispa>=0.10",
+    "ruff>=0.3",
+    "duckdb>=0.10",
+]
+
+[tool.uv]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+
+[tool.ruff.lint]
+ignore = ["PLW1510", "TRY002", "PERF102"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

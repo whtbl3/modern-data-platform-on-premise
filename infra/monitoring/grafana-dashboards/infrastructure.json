@@ -1,0 +1,106 @@
+{
+  "dashboard": {
+    "title": "VietMart Lakehouse — Infrastructure",
+    "uid": "vietmart-infrastructure",
+    "tags": ["vietmart", "lakehouse", "infra", "minio", "k8s"],
+    "timezone": "Asia/Ho_Chi_Minh",
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "MinIO Disk Usage",
+        "type": "gauge",
+        "gridPos": {"h": 6, "w": 8, "x": 0, "y": 0},
+        "targets": [
+          {"expr": "minio_cluster_disk_used_bytes / minio_cluster_disk_total_bytes * 100"}
+        ],
+        "fieldConfig": {"defaults": {"unit": "percent", "max": 100, "thresholds": {"steps": [{"color": "green", "value": 0}, {"color": "yellow", "value": 75}, {"color": "red", "value": 90}]}}}
+      },
+      {
+        "id": 2,
+        "title": "MinIO Total Storage (TB)",
+        "type": "stat",
+        "gridPos": {"h": 6, "w": 8, "x": 8, "y": 0},
+        "targets": [
+          {"expr": "minio_cluster_disk_total_bytes / 1099511627776", "legendFormat": "Total"},
+          {"expr": "minio_cluster_disk_used_bytes / 1099511627776", "legendFormat": "Used"}
+        ],
+        "fieldConfig": {"defaults": {"unit": "TB"}}
+      },
+      {
+        "id": 3,
+        "title": "MinIO Nodes Status",
+        "type": "stat",
+        "gridPos": {"h": 6, "w": 8, "x": 16, "y": 0},
+        "targets": [
+          {"expr": "minio_cluster_nodes_online_total", "legendFormat": "Online"},
+          {"expr": "minio_cluster_nodes_offline_total", "legendFormat": "Offline"}
+        ]
+      },
+      {
+        "id": 4,
+        "title": "K8s Pod Status (lakehouse namespaces)",
+        "type": "table",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 6},
+        "targets": [
+          {"expr": "kube_pod_status_phase{namespace=~\"lakehouse-.*\"}", "format": "table", "instant": true}
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Node CPU Usage",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 6},
+        "targets": [
+          {
+            "expr": "100 - (avg by(instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+            "legendFormat": "{{instance}}"
+          }
+        ],
+        "fieldConfig": {"defaults": {"unit": "percent", "max": 100}}
+      },
+      {
+        "id": 6,
+        "title": "Node Memory Usage",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 14},
+        "targets": [
+          {
+            "expr": "(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100",
+            "legendFormat": "{{instance}}"
+          }
+        ],
+        "fieldConfig": {"defaults": {"unit": "percent", "max": 100}}
+      },
+      {
+        "id": 7,
+        "title": "Spark Active Executors",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 14},
+        "targets": [
+          {"expr": "spark_app_executor_count", "legendFormat": "{{app_name}}"}
+        ]
+      },
+      {
+        "id": 8,
+        "title": "ClickHouse Memory Usage",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 22},
+        "targets": [
+          {"expr": "clickhouse_memory_tracking_current_bytes / 1073741824", "legendFormat": "Memory (GB)"}
+        ],
+        "fieldConfig": {"defaults": {"unit": "decgbytes"}}
+      },
+      {
+        "id": 9,
+        "title": "Trino Active Queries",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 22},
+        "targets": [
+          {"expr": "trino_running_queries", "legendFormat": "Running"},
+          {"expr": "trino_queued_queries", "legendFormat": "Queued"}
+        ]
+      }
+    ]
+  }
+}

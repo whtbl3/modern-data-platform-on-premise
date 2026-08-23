@@ -1,0 +1,11 @@
+product_id,sku,product_name,category_l1,category_l2,brand,price_vnd,cost_vnd,supplier_id,supplier_name,weight_kg,is_active
+P001,SKU-ELEC-001,iPhone 15 Pro Max,Electronics,Smartphones,Apple,34990000,28000000,SUP01,Apple Vietnam,0.22,true
+P002,SKU-ELEC-002,Samsung Galaxy S24,Electronics,Smartphones,Samsung,27990000,22000000,SUP02,Samsung Vietnam,0.20,true
+P003,SKU-FOOD-001,Vinamilk Fresh Milk 1L,Food & Beverage,Dairy,Vinamilk,35000,25000,SUP03,Vinamilk,1.05,true
+P004,SKU-FOOD-002,Coca Cola 330ml x6,Food & Beverage,Beverages,Coca Cola,65000,45000,SUP04,CCEP Vietnam,2.10,true
+P005,SKU-HOME-001,Sunlight Dish Soap 1.5L,Home & Living,Cleaning,Unilever,55000,35000,SUP05,Unilever Vietnam,1.55,true
+P006,SKU-CLTH-001,Coolmate Basic Tee,Clothing,T-Shirts,Coolmate,199000,80000,SUP06,Coolmate,0.15,true
+P007,SKU-ELEC-003,AirPods Pro 2,Electronics,Audio,Apple,6790000,5400000,SUP01,Apple Vietnam,0.05,true
+P008,SKU-FOOD-003,Trung Nguyen Coffee G7 20pack,Food & Beverage,Coffee,Trung Nguyen,89000,55000,SUP07,Trung Nguyen,0.40,true
+P009,SKU-HLTH-001,Pharmacity Vitamin C 1000mg,Health,Supplements,Pharmacity,120000,60000,SUP08,Pharmacity,0.10,true
+P010,SKU-HOME-002,Lock&Lock Container Set,Home & Living,Kitchen,Lock&Lock,350000,200000,SUP09,Lock&Lock VN,1.20,true

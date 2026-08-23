@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: raw_payments
+    description: Payment gateway data (VNPay, Momo, Card)
+    schema: raw
+    tables:
+      - name: payments_vnpay
+        description: VNPay transactions (SFTP hourly)
+        loaded_at_field: _ingested_at
+      - name: payments_momo
+        description: Momo wallet transactions (webhook)
+        loaded_at_field: _ingested_at
+      - name: payments_card
+        description: Bank card transactions (SFTP daily 2AM)
+        loaded_at_field: _ingested_at

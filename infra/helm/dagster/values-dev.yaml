@@ -1,0 +1,29 @@
+dagsterWebserver:
+  replicas: 1
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 250m
+
+dagsterDaemon:
+  replicas: 1
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 250m
+
+runLauncher:
+  type: K8sRunLauncher
+  config:
+    k8sRunLauncher:
+      envVars:
+        - MINIO_ENDPOINT=http://minio.dev:9000
+        - HIVE_METASTORE_URI=thrift://hive-metastore.dev:9083
+        - SPARK_MASTER=k8s://https://kubernetes.default.svc
+        - TRINO_HOST=trino.dev
+        - KAFKA_BROKERS=kafka.dev:9092
+
+postgresql:
+  enabled: true
+  postgresqlDatabase: dagster
+  postgresqlUsername: dagster

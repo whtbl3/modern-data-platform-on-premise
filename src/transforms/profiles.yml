@@ -1,0 +1,21 @@
+lakehouse:
+  target: "{{ env_var('DBT_TARGET', 'dev') }}"
+  outputs:
+    dev:
+      type: trino
+      method: none
+      host: trino.dev
+      port: 8080
+      user: dbt
+      database: iceberg
+      schema: dev
+      threads: 4
+    prod:
+      type: trino
+      method: none
+      host: trino.prod
+      port: 8080
+      user: dbt
+      database: iceberg
+      schema: prod
+      threads: 8

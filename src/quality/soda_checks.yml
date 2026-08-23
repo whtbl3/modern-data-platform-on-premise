@@ -1,0 +1,104 @@
+# VietMart Data Quality Checks (Soda Core)
+# Run after each dbt layer completes
+
+# =============================================================================
+# STAGING LAYER
+# =============================================================================
+
+checks for staging.stg_pos__transactions:
+  - row_count > 0
+  - missing_count(transaction_id) = 0
+  - duplicate_count(transaction_id) = 0
+  - invalid_count(net_amount) = 0:
+      valid min: 0
+  - invalid_count(store_id) = 0:
+      valid regex: "^STR-\\d{3}$"
+  - freshness(transaction_time) < 1d
+
+checks for staging.stg_ecommerce__orders:
+  - row_count > 0
+  - missing_count(order_id) = 0
+  - duplicate_count(order_id) = 0
+  - invalid_count(total_amount) = 0:
+      valid min: 1000
+  - values in (channel) must be in ("web", "mobile_app")
+  - freshness(order_time) < 1d
+
+checks for staging.stg_ecommerce__customers:
+  - row_count > 0
+  - missing_count(customer_id) = 0
+  - duplicate_count(customer_id) = 0
+  - invalid_count(phone_normalized) = 0:
+      valid regex: "^0\\d{9}$"
+
+checks for staging.stg_payments__consolidated:
+  - row_count > 0
+  - missing_count(payment_id) = 0
+  - duplicate_count(payment_id) = 0
+  - invalid_count(amount) = 0:
+      valid min: 0
+  - values in (gateway) must be in ("vnpay", "momo", "card")
+  - values in (status) must be in ("success", "failed", "pending", "refunded")
+
+checks for staging.stg_inventory__stock_levels:
+  - row_count > 0
+  - missing_count(store_id) = 0
+  - missing_count(sku) = 0
+  - invalid_count(qty_available) = 0:
+      valid min: 0
+
+checks for staging.stg_loyalty__members:
+  - row_count > 0
+  - missing_count(member_id) = 0
+  - duplicate_count(member_id) = 0
+  - invalid_count(phone_normalized) = 0:
+      valid regex: "^0\\d{9}$"
+  - values in (tier) must be in ("Bronze", "Silver", "Gold", "Platinum")
+
+checks for staging.stg_clickstream__events:
+  - row_count > 0
+  - missing_count(event_id) = 0
+  - missing_count(session_id) = 0
+
+# =============================================================================
+# INTERMEDIATE LAYER
+# =============================================================================
+
+checks for intermediate.int_customers_unified:
+  - row_count > 0
+  - missing_count(customer_uid) = 0
+  - duplicate_count(customer_uid) = 0
+
+checks for intermediate.int_orders_all_channels:
+  - row_count > 0
+  - missing_count(order_id) = 0
+
+# =============================================================================
+# MARTS LAYER
+# =============================================================================
+
+checks for marts.dim_customers:
+  - row_count > 0
+  - missing_count(customer_uid) = 0
+  - duplicate_count(customer_uid) = 0
+  - values in (rfm_segment) must be in ("Champion", "Loyal", "New", "At Risk", "Hibernating", "Lost", "Regular")
+
+checks for marts.dim_stores:
+  - row_count = 120
+  - missing_count(store_id) = 0
+
+checks for marts.fct_revenue_daily:
+  - row_count > 0
+  - min(gross_revenue) >= 0
+  - missing_count(revenue_date) = 0
+
+checks for marts.fct_reconciliation:
+  - row_count > 0
+  - failed_count(alert_level) = 0:
+      fail condition: alert_level = 'CRITICAL'
+  - avg(discrepancy_pct) < 2.0
+
+checks for marts.fct_inventory_alerts:
+  - missing_count(store_id) = 0
+  - missing_count(sku) = 0
+  - values in (alert_type) must be in ("OUT_OF_STOCK", "LOW_STOCK", "REORDER")

@@ -1,0 +1,26 @@
+replicas: 3
+
+resources:
+  requests:
+    memory: 8Gi
+    cpu: 4000m
+
+storage:
+  size: 200Gi
+
+listeners:
+  plain:
+    port: 9092
+  internal:
+    port: 9093
+
+cruiseControl:
+  enabled: true
+
+metrics:
+  enabled: true
+  prometheusRule:
+    enabled: true
+
+autoTopicCreation:
+  enabled: false

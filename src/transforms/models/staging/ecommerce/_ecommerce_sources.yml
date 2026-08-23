@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: raw_ecommerce
+    description: E-commerce platform data via Debezium CDC
+    schema: raw
+    tables:
+      - name: ecom_orders
+        description: Online orders from e-commerce PostgreSQL
+        loaded_at_field: _ingested_at
+        freshness:
+          warn_after: { count: 1, period: hour }
+          error_after: { count: 4, period: hour }
+      - name: ecom_customers
+        description: Registered e-commerce customers
+        loaded_at_field: _ingested_at

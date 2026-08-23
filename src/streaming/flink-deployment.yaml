@@ -1,0 +1,75 @@
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: vietmart-orders-stream
+  namespace: lakehouse-prod
+spec:
+  image: lakehouse/flink-vietmart:latest
+  flinkVersion: v1_18
+  flinkConfiguration:
+    execution.checkpointing.interval: "60000"
+    state.backend: rocksdb
+    state.checkpoints.dir: s3://prod-raw/flink/checkpoints/orders
+    state.savepoints.dir: s3://prod-raw/flink/savepoints/orders
+    restart-strategy: fixed-delay
+    restart-strategy.fixed-delay.attempts: "3"
+    restart-strategy.fixed-delay.delay: "30s"
+    kubernetes.operator.job.autoscaler.enabled: "true"
+    kubernetes.operator.job.autoscaler.stabilization.interval: "5m"
+    kubernetes.operator.job.autoscaler.metrics.window: "60s"
+  serviceAccount: flink
+  jobManager:
+    resource:
+      memory: "2g"
+      cpu: 1
+  taskManager:
+    resource:
+      memory: "4g"
+      cpu: 2
+  job:
+    jarURI: local:///opt/flink/usrlib/flink-python.jar
+    entryClass: org.apache.flink.client.python.PythonDriver
+    args:
+      - "-py"
+      - "/opt/flink/usrlib/orders_stream.py"
+    parallelism: 4
+    upgradeMode: savepoint
+---
+apiVersion: flink.apache.org/v1beta1
+kind: FlinkDeployment
+metadata:
+  name: vietmart-clickstream-stream
+  namespace: lakehouse-prod
+spec:
+  image: lakehouse/flink-vietmart:latest
+  flinkVersion: v1_18
+  flinkConfiguration:
+    execution.checkpointing.interval: "30000"
+    state.backend: rocksdb
+    state.checkpoints.dir: s3://prod-raw/flink/checkpoints/clickstream
+    state.savepoints.dir: s3://prod-raw/flink/savepoints/clickstream
+    restart-strategy: fixed-delay
+    restart-strategy.fixed-delay.attempts: "5"
+    restart-strategy.fixed-delay.delay: "15s"
+    kubernetes.operator.job.autoscaler.enabled: "true"
+    kubernetes.operator.job.autoscaler.stabilization.interval: "3m"
+    kubernetes.operator.job.autoscaler.metrics.window: "30s"
+    # Higher parallelism for 5M events/day, peak 600/sec
+    kubernetes.operator.job.autoscaler.target.utilization: "0.7"
+  serviceAccount: flink
+  jobManager:
+    resource:
+      memory: "2g"
+      cpu: 1
+  taskManager:
+    resource:
+      memory: "8g"
+      cpu: 4
+  job:
+    jarURI: local:///opt/flink/usrlib/flink-python.jar
+    entryClass: org.apache.flink.client.python.PythonDriver
+    args:
+      - "-py"
+      - "/opt/flink/usrlib/clickstream_stream.py"
+    parallelism: 6
+    upgradeMode: savepoint

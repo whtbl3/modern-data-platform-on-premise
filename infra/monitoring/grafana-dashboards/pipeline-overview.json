@@ -1,0 +1,83 @@
+{
+  "dashboard": {
+    "title": "VietMart Lakehouse — Pipeline Overview",
+    "uid": "vietmart-pipeline-overview",
+    "tags": ["vietmart", "lakehouse", "pipeline"],
+    "timezone": "Asia/Ho_Chi_Minh",
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Daily Data Volume (GB)",
+        "type": "stat",
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "sum(increase(minio_bucket_usage_total_bytes{bucket=~\".*-raw\"}[24h])) / 1073741824",
+            "legendFormat": "Total Ingested"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {"unit": "decgbytes", "thresholds": {"steps": [{"color": "green", "value": 0}, {"color": "yellow", "value": 8}, {"color": "red", "value": 12}]}}
+        }
+      },
+      {
+        "id": 2,
+        "title": "Dagster Run Status (24h)",
+        "type": "piechart",
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 0},
+        "targets": [
+          {"expr": "sum by (status) (increase(dagster_run_total[24h]))"}
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Pipeline Latency — Raw to Mart",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "dagster_asset_materialization_duration_seconds{asset_key=\"dbt_marts\"}",
+            "legendFormat": "dbt_marts"
+          },
+          {
+            "expr": "dagster_asset_materialization_duration_seconds{asset_key=\"dbt_staging\"}",
+            "legendFormat": "dbt_staging"
+          }
+        ],
+        "fieldConfig": {"defaults": {"unit": "s"}}
+      },
+      {
+        "id": 4,
+        "title": "Records Ingested by Source",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "targets": [
+          {"expr": "sum by (asset_key) (increase(dagster_asset_materialization_total{asset_key=~\"raw_.*\"}[1h]))", "legendFormat": "{{asset_key}}"}
+        ]
+      },
+      {
+        "id": 5,
+        "title": "dbt Model Run Time",
+        "type": "barchart",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+        "targets": [
+          {"expr": "dagster_asset_materialization_duration_seconds{asset_key=~\"dbt_.*\"}", "legendFormat": "{{asset_key}}"}
+        ],
+        "fieldConfig": {"defaults": {"unit": "s"}}
+      },
+      {
+        "id": 6,
+        "title": "Reconciliation Drift (%)",
+        "type": "gauge",
+        "gridPos": {"h": 4, "w": 6, "x": 0, "y": 4},
+        "targets": [
+          {"expr": "lakehouse_reconciliation_discrepancy_pct"}
+        ],
+        "fieldConfig": {
+          "defaults": {"unit": "percent", "max": 5, "thresholds": {"steps": [{"color": "green", "value": 0}, {"color": "yellow", "value": 1}, {"color": "red", "value": 3}]}}
+        }
+      }
+    ]
+  }
+}

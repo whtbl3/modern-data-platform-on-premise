@@ -1,0 +1,23 @@
+replicas: 1
+
+resources:
+  requests:
+    memory: 2Gi
+    cpu: 1000m
+
+storage:
+  size: 20Gi
+
+listeners:
+  plain:
+    port: 9092
+  internal:
+    port: 9093
+
+cruiseControl:
+  enabled: false
+
+metrics:
+  enabled: true
+  prometheusRule:
+    enabled: true

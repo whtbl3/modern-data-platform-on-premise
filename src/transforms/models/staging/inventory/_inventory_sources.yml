@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: raw_inventory
+    description: SAP inventory exports (every 30 min)
+    schema: raw
+    tables:
+      - name: stock_levels
+        description: Stock quantity per SKU per store
+        loaded_at_field: _ingested_at
+        freshness:
+          warn_after: { count: 1, period: hour }
+          error_after: { count: 3, period: hour }

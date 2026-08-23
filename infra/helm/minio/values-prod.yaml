@@ -1,0 +1,21 @@
+mode: distributed
+
+replicas: 4
+
+resources:
+  requests:
+    memory: 4Gi
+    cpu: 2000m
+
+persistence:
+  size: 500Gi
+
+buckets:
+  - name: prod-raw
+  - name: prod-staging
+  - name: prod-curated
+  - name: prod-analytics
+
+ingress:
+  enabled: true
+  hostname: minio.prod.local

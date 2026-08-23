@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: raw_pos
+    description: POS transactions from 120 retail stores (CSV export every 15 min)
+    schema: raw
+    tables:
+      - name: pos_transactions
+        description: Point-of-sale transactions
+        loaded_at_field: _ingested_at
+        freshness:
+          warn_after: { count: 2, period: hour }
+          error_after: { count: 6, period: hour }

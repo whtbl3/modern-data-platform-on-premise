@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: fct_store_performance
+    description: |
+      Daily store scorecard with ranking.
+      Used by Regional Managers every morning on Superset.
+    columns:
+      - name: store_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_stores')
+              field: store_id
+      - name: date_key
+        tests:
+          - not_null
+      - name: total_revenue_vnd
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+
+  - name: fct_inventory_alerts
+    description: |
+      Inventory stockout alerts per store × SKU.
+      COO monitors daily. Alert severity: Critical/High/Medium.
+    columns:
+      - name: stock_status
+        tests:
+          - accepted_values:
+              values: ["OUT_OF_STOCK", "LOW_STOCK", "REORDER_NEEDED"]
+      - name: alert_severity
+        tests:
+          - accepted_values:
+              values: ["Critical", "High", "Medium"]

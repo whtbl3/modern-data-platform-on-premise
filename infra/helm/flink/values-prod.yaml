@@ -1,0 +1,38 @@
+image:
+  repository: flink
+  tag: "1.18"
+
+jobManager:
+  replicas: 2
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 1000m
+
+taskManager:
+  replicas: 3
+  resources:
+    requests:
+      memory: 8Gi
+      cpu: 4000m
+
+autoscaler:
+  enabled: true
+  metrics:
+    window: 60s
+  scaling:
+    effectivenessThreshold: 0.7
+  stabilization:
+    interval: 5m
+  maxParallelism: 128
+
+highAvailability:
+  enabled: true
+  storageDir: s3://prod-raw/flink/ha
+
+checkpointing:
+  interval: 60000
+  minPause: 30000
+  timeout: 600000
+  stateBackend: rocksdb
+  incrementalCheckpoints: true

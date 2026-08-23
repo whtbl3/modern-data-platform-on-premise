@@ -1,0 +1,26 @@
+replicaCount: 2
+
+resources:
+  requests:
+    memory: 2Gi
+    cpu: 1000m
+
+openmetadata:
+  config:
+    database:
+      host: postgres.prod
+      port: 5432
+      databaseName: openmetadata
+      auth:
+        username: openmetadata
+        existingSecret: openmetadata-db
+    elasticsearch:
+      host: elasticsearch.prod
+      port: 9200
+    pipelineServiceClientConfig:
+      metadataApiEndpoint: http://openmetadata.prod:8585/api
+
+ingress:
+  enabled: true
+  hosts:
+    - openmetadata.prod.local

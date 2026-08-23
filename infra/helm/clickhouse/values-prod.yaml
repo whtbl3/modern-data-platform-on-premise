@@ -1,0 +1,23 @@
+shards: 2
+replicas: 2
+
+resources:
+  requests:
+    memory: 16Gi
+    cpu: 8000m
+
+storage:
+  size: 500Gi
+
+users:
+  - name: default
+    profile: default
+  - name: superset
+    profile: readonly
+
+monitoring:
+  enabled: true
+  prometheusEndpoint: true
+
+zookeeper:
+  replicas: 3

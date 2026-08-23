@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: lakehouse-prod
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - app: minio
+            chart: minio/minio
+            valuesFile: values-prod.yaml
+          - app: kafka
+            chart: strimzi/strimzi-kafka-operator
+            valuesFile: values-prod.yaml
+          - app: flink
+            chart: flink-operator/flink-kubernetes-operator
+            valuesFile: values-prod.yaml
+          - app: spark
+            chart: spark-operator/spark-operator
+            valuesFile: values-prod.yaml
+          - app: clickhouse
+            chart: altinity/clickhouse-operator
+            valuesFile: values-prod.yaml
+          - app: trino
+            chart: trino/trino
+            valuesFile: values-prod.yaml
+          - app: hive-metastore
+            chart: custom/hive-metastore
+            valuesFile: values-prod.yaml
+          - app: dagster
+            chart: dagster/dagster
+            valuesFile: values-prod.yaml
+  template:
+    metadata:
+      name: "prod-{{app}}"
+      namespace: argocd
+    spec:
+      project: lakehouse-prod
+      source:
+        repoURL: "https://git.internal/lakehouse/infra"
+        path: "infra/helm/{{app}}"
+        helm:
+          valueFiles:
+            - "{{valuesFile}}"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: prod
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

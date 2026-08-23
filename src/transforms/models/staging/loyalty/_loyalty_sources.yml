@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: raw_loyalty
+    description: Loyalty program data via MySQL CDC
+    schema: raw
+    tables:
+      - name: loyalty_members
+        description: 1.5M loyalty program members
+        loaded_at_field: _ingested_at

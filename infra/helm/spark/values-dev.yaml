@@ -1,0 +1,33 @@
+image:
+  repository: apache/spark
+  tag: "3.5.1"
+
+sparkOperator:
+  enabled: true
+
+dynamicAllocation:
+  enabled: true
+  minExecutors: 1
+  maxExecutors: 4
+  executorIdleTimeout: 60s
+
+driver:
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 500m
+
+executor:
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 1000m
+
+sparkConf:
+  spark.sql.catalog.lakehouse: org.apache.iceberg.spark.SparkCatalog
+  spark.sql.catalog.lakehouse.type: hive
+  spark.sql.catalog.lakehouse.uri: thrift://hive-metastore.dev:9083
+  spark.hadoop.fs.s3a.endpoint: http://minio.dev:9000
+  spark.hadoop.fs.s3a.access.key: "${MINIO_ACCESS_KEY}"
+  spark.hadoop.fs.s3a.secret.key: "${MINIO_SECRET_KEY}"
+  spark.hadoop.fs.s3a.path.style.access: "true"

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vietmart-grafana-dashboards
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  pipeline-overview.json: |
+    {{ .Files.Get "grafana-dashboards/pipeline-overview.json" | indent 4 }}
+  streaming-realtime.json: |
+    {{ .Files.Get "grafana-dashboards/streaming-realtime.json" | indent 4 }}
+  infrastructure.json: |
+    {{ .Files.Get "grafana-dashboards/infrastructure.json" | indent 4 }}

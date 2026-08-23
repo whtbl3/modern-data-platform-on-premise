@@ -1,0 +1,29 @@
+image:
+  repository: flink
+  tag: "1.18"
+
+jobManager:
+  replicas: 1
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: 500m
+
+taskManager:
+  replicas: 1
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 1000m
+
+autoscaler:
+  enabled: true
+  metrics:
+    window: 60s
+  scaling:
+    effectivenessThreshold: 0.7
+  stabilization:
+    interval: 3m
+
+highAvailability:
+  enabled: false

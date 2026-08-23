@@ -1,0 +1,21 @@
+mode: standalone
+
+replicas: 1
+
+resources:
+  requests:
+    memory: 1Gi
+    cpu: 500m
+
+persistence:
+  size: 50Gi
+
+buckets:
+  - name: dev-raw
+  - name: dev-staging
+  - name: dev-curated
+  - name: dev-analytics
+
+ingress:
+  enabled: true
+  hostname: minio.dev.local

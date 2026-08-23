@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: Date dimension (2022-2026). Join any fact table on date_key.
+    columns:
+      - name: date_key
+        description: Primary key (DATE type)
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_stores
+    description: Store dimension — 120 retail stores with region, size, staff info
+    columns:
+      - name: store_id
+        tests:
+          - not_null
+          - unique
+      - name: region
+        tests:
+          - accepted_values:
+              values: ["North", "Central", "South"]
+
+  - name: dim_customers
+    description: Customer dimension with RFM segmentation. Updated daily.
+    columns:
+      - name: customer_uid
+        description: Unified customer ID (across POS, e-commerce, loyalty)
+        tests:
+          - not_null
+          - unique
+      - name: rfm_segment
+        tests:
+          - accepted_values:
+              values: ["Champion", "Loyal", "New Customer", "At Risk", "Hibernating", "Lost", "Regular"]
+
+  - name: dim_products
+    description: Product master dimension with margin calculation
+    columns:
+      - name: product_id
+        tests:
+          - not_null
+          - unique
+      - name: price_vnd
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0

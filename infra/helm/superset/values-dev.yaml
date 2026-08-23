@@ -1,0 +1,28 @@
+replicaCount: 1
+
+resources:
+  requests:
+    memory: 1Gi
+    cpu: 500m
+
+supersetNode:
+  connections:
+    db_host: postgres.dev
+    db_port: 5432
+    db_name: superset
+    db_user: superset
+
+extraEnv:
+  SUPERSET_SECRET_KEY: "${SUPERSET_SECRET_KEY}"
+
+init:
+  adminUser:
+    username: admin
+    firstname: Admin
+    lastname: User
+    email: admin@lakehouse.local
+
+ingress:
+  enabled: true
+  hosts:
+    - superset.dev.local

@@ -1,0 +1,66 @@
+stages:
+  - lint
+  - test
+  - build
+  - deploy
+
+variables:
+  DOCKER_REGISTRY: registry.internal
+
+# --- LINT ---
+lint-python:
+  stage: lint
+  script:
+    - uv run ruff check src/ dagster_project/
+
+lint-dbt:
+  stage: lint
+  script:
+    - cd src/transforms && uv run dbt deps && uv run dbt compile --target dev
+
+# --- TEST ---
+test-unit:
+  stage: test
+  script:
+    - uv run pytest tests/ -v
+
+test-dbt:
+  stage: test
+  script:
+    - cd src/transforms && uv run dbt test --target dev
+
+test-soda:
+  stage: test
+  script:
+    - uv run soda scan -d lakehouse -c src/quality/soda_checks.yml
+  only:
+    - main
+
+# --- BUILD ---
+build-spark-jobs:
+  stage: build
+  script:
+    - docker build -t $DOCKER_REGISTRY/lakehouse-spark:$CI_COMMIT_SHA -f src/batch/Dockerfile .
+    - docker push $DOCKER_REGISTRY/lakehouse-spark:$CI_COMMIT_SHA
+
+build-flink-jobs:
+  stage: build
+  script:
+    - docker build -t $DOCKER_REGISTRY/lakehouse-flink:$CI_COMMIT_SHA -f src/streaming/Dockerfile .
+    - docker push $DOCKER_REGISTRY/lakehouse-flink:$CI_COMMIT_SHA
+
+# --- DEPLOY ---
+deploy-dev:
+  stage: deploy
+  script:
+    - argocd app sync lakehouse-dev --async
+  only:
+    - develop
+
+deploy-prod:
+  stage: deploy
+  script:
+    - argocd app sync lakehouse-prod --async
+  only:
+    - main
+  when: manual

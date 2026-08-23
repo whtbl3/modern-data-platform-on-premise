@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: raw_clickstream
+    description: Web + Mobile clickstream events
+    schema: raw
+    tables:
+      - name: clickstream_events
+        description: User interaction events (5M/day)
+        loaded_at_field: event_time
+        freshness:
+          warn_after: { count: 1, period: hour }
+          error_after: { count: 6, period: hour }

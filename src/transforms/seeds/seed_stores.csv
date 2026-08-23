@@ -1,0 +1,11 @@
+store_id,store_name,region,city,district,address,store_format,sqm,staff_count,opened_date,manager_name
+S001,VietMart Quan 1,South,Ho Chi Minh,Quan 1,123 Nguyen Hue,mall,1200,45,2019-03-15,Nguyen Van A
+S002,VietMart Quan 7,South,Ho Chi Minh,Quan 7,456 Nguyen Thi Thap,street,800,30,2019-06-01,Tran Thi B
+S003,VietMart Thu Duc,South,Ho Chi Minh,Thu Duc,789 Vo Van Ngan,street,600,25,2020-01-10,Le Van C
+S004,VietMart Binh Thanh,South,Ho Chi Minh,Binh Thanh,321 Xo Viet Nghe Tinh,street,700,28,2020-04-20,Pham Thi D
+S005,VietMart Hoan Kiem,North,Ha Noi,Hoan Kiem,10 Trang Tien,mall,1500,50,2019-01-01,Hoang Van E
+S006,VietMart Cau Giay,North,Ha Noi,Cau Giay,55 Xuan Thuy,street,900,35,2019-09-15,Vu Thi F
+S007,VietMart Hai Ba Trung,North,Ha Noi,Hai Ba Trung,200 Ba Trieu,mall,1100,40,2020-03-01,Dang Van G
+S008,VietMart Da Nang,Central,Da Nang,Hai Chau,88 Bach Dang,mall,1000,38,2020-06-15,Bui Thi H
+S009,VietMart Hue,Central,Hue,Phu Nhuan,15 Hung Vuong,street,500,20,2021-01-10,Do Van I
+S010,VietMart Can Tho,South,Can Tho,Ninh Kieu,45 Tran Hung Dao,street,650,24,2021-03-20,Nguyen Thi K

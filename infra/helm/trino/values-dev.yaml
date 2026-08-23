@@ -1,0 +1,27 @@
+coordinator:
+  replicas: 1
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 1000m
+
+worker:
+  replicas: 1
+  resources:
+    requests:
+      memory: 4Gi
+      cpu: 2000m
+
+catalogs:
+  iceberg: |
+    connector.name=iceberg
+    hive.metastore.uri=thrift://hive-metastore.dev:9083
+    iceberg.file-format=PARQUET
+    hive.s3.endpoint=http://minio.dev:9000
+    hive.s3.aws-access-key=${ENV:MINIO_ACCESS_KEY}
+    hive.s3.aws-secret-key=${ENV:MINIO_SECRET_KEY}
+    hive.s3.path-style-access=true
+  clickhouse: |
+    connector.name=clickhouse
+    connection-url=jdbc:clickhouse://clickhouse.dev:8123
+    connection-user=default

@@ -1,0 +1,21 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: flink-kafka-scaler
+  namespace: prod
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: flink-taskmanager
+  pollingInterval: 15
+  cooldownPeriod: 120
+  minReplicaCount: 1
+  maxReplicaCount: 16
+  triggers:
+    - type: kafka
+      metadata:
+        bootstrapServers: kafka.prod:9092
+        consumerGroup: flink-orders-consumer
+        topic: orders
+        lagThreshold: "1000"
